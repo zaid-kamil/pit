@@ -14,10 +14,9 @@ features include:
 - sys
 
 # installation (not yet publish):
-```
 --pip install pit--
-```
-git clone zaid-kamil/pit
+
+git clone [zaid-kamil/pit](https://github.com/zaid-kamil/pit) or just copy the pit.py
 
 # usage:
 
