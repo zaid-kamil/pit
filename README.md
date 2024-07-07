@@ -13,9 +13,7 @@ features include:
 - argparse
 - sys
 
-# installation (not yet publish):
---pip install pit--
-
+# installation :
 git clone [zaid-kamil/pit](https://github.com/zaid-kamil/pit) or just copy the pit.py
 
 # usage:
