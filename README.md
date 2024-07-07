@@ -13,7 +13,7 @@ features include:
 - argparse
 - sys
 
-# installation:
+# installation (not yet publish):
 ```
 pip install pit
 ```
