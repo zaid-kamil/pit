@@ -15,8 +15,9 @@ features include:
 
 # installation (not yet publish):
 ```
-pip install pit
+--pip install pit--
 ```
+git clone zaid-kamil/pit
 
 # usage:
 
