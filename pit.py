@@ -10,7 +10,7 @@ from pprint import pp
 
 class Pit:
     def __init__(self, repo_path=".") -> None:
-        self.repo_path = Path(repo_path, "⛏️ pit")
+        self.repo_path = Path(repo_path, ".pit")
         self.objects_path = self.repo_path / "objects"
         self.head_path = self.repo_path / "HEAD"
         self.index_path = self.repo_path / "index"
@@ -25,10 +25,7 @@ class Pit:
         if not self.index_path.exists():    
             with self.index_path.open("w") as index_file:
                 index_file.write("[]")
-        try:
-            print("⛏️  Digging pit...")
-        except Exception as e:
-            raise e 
+        print("⛏️  Digging pit...")
 
     def add(self, file_path):
         file_data = self.read_file(file_path)
@@ -135,17 +132,27 @@ class Pit:
     def get_file_content(self, file_path):
         pass
 
-if __name__ == "__main__":
+def show_usage():
+    print("⛏️  Pit - A simple version control system")
+    print("Usage: pit <command> [<args>]")
+    print("Commands:")
+    print("  init        Create an empty pit repository")
+    print("  add         Add file to staging area")
+    print("  commit      Record changes to the repository")
+    print("  log         Show commit logs")
+    print("  status      Show the working tree status")
+
+def main():
     pit = Pit()
     if len(sys.argv) < 2:
-        print("Usage: python pit.py <command>")
+        show_usage()
         sys.exit(1)
     command = sys.argv[1]
     if command == "init":
         pit.start()
     elif command == "add":
         if len(sys.argv) < 3:
-            print("Usage: python pit.py add <file_path>")
+            print("Usage: pit add <file_path>")
             sys.exit(1)
         file_path = sys.argv[2]
         if file_path == "*":
@@ -157,7 +164,7 @@ if __name__ == "__main__":
         pit.add(file_path)
     elif command == "commit":
         if len(sys.argv) < 3:
-            print("Usage: python pit.py commit <message>")
+            print("Usage: pit commit <message>")
             sys.exit(1)
         message = sys.argv[2]
         pit.commit(message)
@@ -165,3 +172,6 @@ if __name__ == "__main__":
         pit.log()
     elif command == "status":
         pit.status()
+
+if __name__ == "__main__":
+    main()
