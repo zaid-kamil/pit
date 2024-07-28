@@ -6,7 +6,9 @@ features include:
 - [x] log
 - [ ] status
 - [ ] diff
-  
+
+# Read article on pit:
+[click here](https://zaid-kamil.medium.com/i-coded-pit-a-version-control-system-in-python-for-fun-67b23cf17018)
 
 ## libraries used:
 - pathlib

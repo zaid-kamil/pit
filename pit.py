@@ -28,6 +28,7 @@ class Pit:
         print("⛏️  Digging pit...")
 
     def add(self, file_path):
+        print(f"⛏️  Adding {file_path} to staging area")
         file_data = self.read_file(file_path)
         file_hash = self.hash_object(file_data)
         if not file_data:
@@ -79,10 +80,33 @@ class Pit:
         pass
 
     def status(self):
-        if self.get_current_head():
-            print("⛏️  On branch master")
-        else:
+        # if head is empty, no commits yet
+        current_commit_hash = self.get_current_head()
+        if not current_commit_hash:
             print("⛏️  No commits yet!")
+            return
+        # get the current commit data
+        commit_data = self.read_file(self.objects_path / current_commit_hash)
+        commit_data = json.loads(commit_data)
+        # get the files in the current commit
+        commit_files = commit_data.get("files")
+        # get the files in the staging area
+        index_files = self.as_list(self.read_file(self.index_path))
+        # get the files in the working directory
+        working_files = [str(file) for file in Path(".").rglob("*") if file.is_file()]
+        # print the status
+        print("⛏️  Working tree status:")
+        for file in working_files:
+            file_hash = self.hash_object(self.read_file(file))
+            if file_hash in commit_files:
+                print(f"    {file} - modified")
+            elif file_hash in index_files:
+                print(f"    {file} - staged")
+            else:
+                print(f"    {file} - untracked")
+        print("⛏️  Staging area status:")
+        for file in index_files:
+            print(f"    {file['path']} - staged")
 
     ## Helper functions
     def hash_object(self, content):
@@ -143,6 +167,8 @@ def show_usage():
     print("  status      Show the working tree status")
 
 def main():
+    ignore_files = ["pit.cmd", "pit.py", "pit.exe"]
+    ignore_dirs = [".git", ".pit", "venv", "__pycache__"]
     pit = Pit()
     if len(sys.argv) < 2:
         show_usage()
@@ -155,13 +181,26 @@ def main():
             print("Usage: pit add <file_path>")
             sys.exit(1)
         file_path = sys.argv[2]
+        if Path(file_path).is_dir():
+            print(f"⛏️  Error: {file_path} is a directory!")
+            sys.exit(1)
+        if file_path in ignore_files:
+            print(f"⛏️  Error: {file_path} is in the ignore list!")
+            sys.exit(1)
+        if not Path(".pit").exists():
+            print("⛏️  Error: Not a pit repository!")
+            sys.exit(1)
         if file_path == "*":
-            for file in Path(".").rglob("*"):
+            data = Path(".").rglob("*")
+            data = [file for file in data if file.is_file()]
+            data = [file for file in data if not any(ignore_dir in file for ignore_dir in ignore_dirs)]
+            data = [str(file) for file in data if file not in ignore_files]
+            for file in data:
                 print(file)
-                if file.is_file():
-                    pit.add(file)
 
-        pit.add(file_path)
+
+        else:            
+            pit.add(file_path)
     elif command == "commit":
         if len(sys.argv) < 3:
             print("Usage: pit commit <message>")
